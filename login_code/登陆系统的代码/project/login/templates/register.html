@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>注册页</title>
+</head>
+
+<style type="text/css">
+body{
+
+    background-image:url('/static/images/tu2.jpg');
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+}
+
+.log{
+    height: 300px;
+    width:400px;
+    background-color: white;
+    margin: 10% auto;
+    border-radius: 25px;
+    border: 1px solid black;
+    }
+    .log .nav{
+        background-color:dodgerblue;
+        width: 100%;
+        height:20%;
+        color:white;
+        font-size: 14px;
+        padding-top: 25px;
+        border-radius: 25px 25px 0px 0px;
+    }
+    .log .nav span{
+        font-size: 20px;
+        text-align: center;
+        margin: auto;
+        margin-left: 40%;
+    }
+    .log .con{
+        margin-top: 40px;
+    }
+    .register{
+        margin: auto;
+    }
+</style>
+<body>
+
+ <div id="bg">
+    <div class="log">
+        <div class="nav"><span>用户注册</span></div>
+        <div class="con">
+            <form class="form" method="post" action="/register/">
+                <div class="input-group">
+                    <span class="input-group-addon">用户名</span>
+                    <input type="text" name="username" placeholder="请输入手机号" class="form-control">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">密  码:</span>
+                    <input type="password" name="password" placeholder="请输入6-12位密码" class="form-control">
+                </div>
+                {{ error }}<br>
+                <div style="text-align: center;margin: 15px;">
+                    <button name="register" type="submit" class="btn btn-default">注册</button>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+ </div>
+</body>
+</html>
