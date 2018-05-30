@@ -1,0 +1,208 @@
+*** Settings ***
+Resource          element.robot
+Library           Selenium2Library
+Library           DatabaseLibrary
+Library           RequestsLibrary
+Library           Collections
+
+*** Test Cases ***
+pw_error
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from error_pw
+    ${row}    Row Count    select * from error_pw
+    : FOR    ${i}    IN RANGE    ${row}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    Input Text    name = username    ${b[${i}][1]}
+    \    Input Text    name = password    ${b[${i}][2]}
+    \    Click Button    name=login_button
+    \    ${dict}    Create Dictionary    Content-Type=application/x-www-form-urlencoded
+    \    create session    api    http://127.0.0.1:8000/index/    ${dict}
+    \    ${data}    Create Dictionary    username=${b[${i}][1]}    password=${b[${i}][2]}
+    \    ${addr}    Post Request    api    /post    data=${data}
+    \    should be Equal as Strings    ${addr.status_code}    404
+    \    log    ${addr.content}
+    \    Page Should Contain    密码或者用户名错误
+    \    Close Browser
+    Disconnect From Database
+
+name_error
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from error_num
+    ${row}    Row Count    select * from error_num
+    : FOR    ${i}    IN RANGE    ${row}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    sleep    1
+    \    Input Text    name = username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name = password    ${b[${i}][2]}
+    \    sleep    1
+    \    Click Button    name=login_button
+    \    sleep    1
+    \    ${dict}    Create Dictionary    Content-Type=application/x-www-form-urlencoded
+    \    create session    api    http://127.0.0.1:8000/index/    ${dict}
+    \    ${data}    Create Dictionary    username=${b[${i}][1]}    password=${b[${i}][2]}
+    \    ${addr}    Post Request    api    /post    data=${data}
+    \    should be Equal as Strings    ${addr.status_code}    404
+    \    log    ${addr.content}
+    \    Page Should Contain    请输入正确的手机号
+    \    Close Browser
+    Disconnect From Database
+
+register_no
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from un_register
+    ${row}    Row Count    select * from un_register
+    : FOR    ${i}    IN RANGE    ${row}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    Input Text    name = username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name = password    ${b[${i}][2]}
+    \    sleep    1
+    \    Click Button    name=login_button
+    \    sleep    1
+    \    ${dict}    Create Dictionary    Content-Type=application/x-www-form-urlencoded
+    \    create session    api    http://127.0.0.1:8000/index/    ${dict}
+    \    ${data}    Create Dictionary    username=${b[${i}][1]}    password=${b[${i}][2]}
+    \    ${addr}    Post Request    api    /post    data=${data}
+    \    should be Equal as Strings    ${addr.status_code}    404
+    \    log    ${addr.content}
+    \    Page Should Contain    该用户尚未注册
+    \    Close Browser
+    Disconnect From Database
+
+right
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from usertable
+    ${row}    Row Count    select * from usertable
+    : FOR    ${i}    IN RANGE    ${row}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    Input Text    name = username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name = password    ${b[${i}][2]}
+    \    sleep    1
+    \    Click Button    name=login_button
+    \    sleep    1
+    \    ${dict}    Create Dictionary    Content-Type=application/x-www-form-urlencoded
+    \    create session    api    http://127.0.0.1:8000/index/    ${dict}
+    \    ${data}    Create Dictionary    username=${b[${i}][1]}    password=${b[${i}][2]}
+    \    ${addr}    Post Request    api    /post    data=${data}
+    \    should be Equal as Strings    ${addr.status_code}    404
+    \    log    ${addr.content}
+    \    Page Should Contain    Welcome
+    \    Close Browser
+    Disconnect From Database
+
+goto_register
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from un_register
+    ${row}    Row Count    select * from un_register
+    ${a}    Query    select*from new
+    ${rowa}    Row Count    select*from new
+    : FOR    ${i}    IN RANGE    ${row}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    Input Text    name = username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name = password    ${b[${i}][2]}
+    \    sleep    1
+    \    Click Button    name=login_button
+    \    sleep    1
+    \    ${dict}    Create Dictionary    Content-Type=application/x-www-form-urlencoded
+    \    create session    api    http://127.0.0.1:8000/index/    ${dict}
+    \    ${data}    Create Dictionary    username=${b[${i}][1]}    password=${b[${i}][2]}
+    \    ${addr}    Post Request    api    /post    data=${data}
+    \    should be Equal as Strings    ${addr.status_code}    404
+    \    log    ${addr.content}
+    \    Page Should Contain    该用户尚未注册
+    \    sleep    1
+    \    Click Element    name=go_reg
+    \    REG    ${rowa}    ${a}
+    \    Click Element    name=back
+    \    Input Text    name=username    ${a}
+    \    sleep    1
+    \    Input Text    name=password
+    Disconnect From Database
+
+re_already
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from re_already
+    ${row}    Row Count    select * from re_already
+    : FOR    ${i}    IN RANGE    ${row}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    Click Element    name=go_reg
+    \    sleep    1
+    \    Input Text    name=username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name=password    ${b[${i}][2]}
+    \    sleep    1
+    \    Click Button    name=register
+    \    sleep    1
+    \    Page should Contain    该用户已经注册过了
+    \    sleep    1
+    \    Close Browser
+    Disconnect From Database
+
+re_num_error
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from re_num_error
+    ${row}    Row Count    select * from re_num_error
+    : FOR    ${i}    IN RANGE    ${ROW}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    sleep    1
+    \    Click Element    name=go_reg
+    \    sleep    1
+    \    Input Text    name=username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name=password    ${b[${i}][2]}
+    \    sleep    1
+    \    Click Button    name=register
+    \    sleep    1
+    \    Page Should Contain    请输入11位合法的手机号
+    \    sleep    1
+    \    Close Browser
+    Disconnect From Database
+
+re_pw_error
+    Connect To Database Using Custom Params    pymysql    database="datalogin",user="root",password="root",host="127.0.0.1",port=3306
+    ${b}    Query    select * from re_pw_error
+    ${row}    Row Count    select * from re_pw_error
+    : FOR    ${i}    IN RANGE    ${ROW}
+    \    Open Browser    http://127.0.0.1:8000/index/    Chrome
+    \    sleep    2
+    \    Click Element    name=go_reg
+    \    sleep    1
+    \    Input Text    name=username    ${b[${i}][1]}
+    \    sleep    1
+    \    Input Text    name=password    ${b[${i}][2]}
+    \    Click Button    name=register
+    \    sleep    1
+    \    Page Should Contain    请输入6-12位密码，只能是字母、数字和下划线
+    \    sleep    1
+    \    Close Browser
+    Disconnect From Database
+
+*** Keywords ***
+sec
+    [Arguments]    ${arg1}
+    : FOR    ${j}    IN RANGE    3
+    \    LOG    arg=${arg1};j=${j}
+
+REG
+    [Arguments]    ${arg}    ${a}
+    : FOR    ${j}    IN RANGE    ${arg}
+    \    Input Text    name=username    ${a[${j}][1]}
+    \    sleep    1
+    \    Input Text    name=password    ${a[${j}][2]}
+    \    sleep    1
+    \    Click Button    name=register
+    \    sleep    1
+    \    Page Should Contain    Register Success
+    \    Click Element    name=back
+    \    sleep    1
+    \    Input Text    name=username    ${a[${j}][1]}
+    \    sleep    1
+    \    Input Text    name=password    ${a[${j}][2]}
+    \    sleep    1
+    \    Click Button    name=login_button
+    \    Page Should Contain    Welcome
+    \    Close Browser
+    \    Open Browser    http://127.0.0.1:8000/register/    Chrome
